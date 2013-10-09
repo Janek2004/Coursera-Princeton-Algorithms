@@ -20,6 +20,9 @@ import java.awt.Font;
 
 public class PercolationVisualizer {
 
+    // delay in miliseconds (controls animation speed)
+    private static final int DELAY = 100;
+
     // draw N-by-N percolation system
     public static void draw(Percolation perc, int N) {
         StdDraw.clear();
@@ -56,24 +59,22 @@ public class PercolationVisualizer {
     }
 
     public static void main(String[] args) {
-        
-        ///In in = new In(args[0]);      // input file
-        //int N = in.readInt();         // N-by-N percolation system
-        In in = new In("input20.txt");
-        int N = 20;
+        In in = new In(args[0]);      // input file
+        int N = in.readInt();         // N-by-N percolation system
+
+        // turn on animation mode
+        StdDraw.show(0);
+
         // repeatedly read in sites to open and draw resulting system
         Percolation perc = new Percolation(N);
         draw(perc, N);
-        int count =0;
+        StdDraw.show(DELAY);
         while (!in.isEmpty()) {
-            count ++;
-            StdDraw.show(0);          // turn on animation mode
             int i = in.readInt();
             int j = in.readInt();
             perc.open(i, j);
             draw(perc, N);
-            StdDraw.show(10);        // pause for 100 miliseconds
+            StdDraw.show(DELAY);
         }
-        
     }
 }

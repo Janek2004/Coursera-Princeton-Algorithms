@@ -26,7 +26,7 @@
  *  @author Kevin Wayne
  */
 public class WeightedQuickUnionUF {
-    private int[] id;    // id[i] = parent of i
+    public int[] id;    // id[i] = parent of i
     private int[] sz;    // sz[i] = number of objects in subtree rooted at i
     private int count;   // number of components
 
