@@ -70,7 +70,8 @@ public class Deque<Item> implements Iterable<Item> {
        }
        else{
            // do nothing or throw exception  
-            throw new java.util.NoSuchElementException();
+                         throw new java.util.NoSuchElementException();
+  
        }
        
        return null;
@@ -108,12 +109,18 @@ public class Deque<Item> implements Iterable<Item> {
        }
        
        public Item next(){
-           Item item = current.item;
+           if(!hasNext())
+           {
+               throw new java.util.NoSuchElementException();
+           }
+           
+               Item item = current.item;
            current = current.next;
            return item;
        }
        public void remove(){
-        throw new java.lang.UnsupportedOperationException();
+
+            throw new java.lang.UnsupportedOperationException();
        }
    }
        
