@@ -35,12 +35,12 @@ public WordNet(String synsets, String _hypernyms)   // the set of nouns (no dupl
    
        for(String noun : nouns){
            if(noun2ids.containsKey(noun)){
-               Bag b = noun2ids.get(noun);
+               Bag <Integer> b = noun2ids.get(noun);
                b.add(new Integer(id));
                noun2ids.put(noun,b);
            }
            else{
-               Bag b = new Bag();
+               Bag <Integer> b = new Bag<Integer>();
                b.add(new Integer(id));
                noun2ids.put(noun,b);
            }
@@ -58,7 +58,7 @@ public WordNet(String synsets, String _hypernyms)   // the set of nouns (no dupl
        String[] fields = line.split(delimiter);
        //get id 
        int id = Integer.parseInt(fields[0]);
-       Bag bag = new Bag();
+       Bag<Integer> bag = new Bag<Integer>();
        
               
        for( int i=1;i<fields.length;i++){
@@ -105,7 +105,7 @@ public int distance(String nounA, String nounB)
         }
     }
     
-    //return -1;
+    return -1;
  }
   
 // a synset (second field of synsets.txt) that is the common ancestor of nounA and nounB      
@@ -113,6 +113,7 @@ public int distance(String nounA, String nounB)
 public String sap(String nounA, String nounB)      
 {
     //Here we probably need to create a SAP
+    
     
     return "";
 }
