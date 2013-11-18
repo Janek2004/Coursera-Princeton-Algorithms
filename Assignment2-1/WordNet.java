@@ -4,7 +4,9 @@ import java.util.HashMap;
 public class WordNet {
         //private final SAP paths;
         private final HashMap<Integer, String> id2synset;
+        private final HashMap<Integer, Bag<Integer>> hypernyms;
         private final HashMap<String, Bag<Integer>> noun2ids;
+        private final HashMap<String, Integer> nounsMap;
  private Synset[] synsets;
 // constructor takes the name of the two input files     
 public WordNet(String synsets, String hypernyms)   // the set of nouns (no duplicates), returned as an Iterable  
@@ -13,12 +15,13 @@ public WordNet(String synsets, String hypernyms)   // the set of nouns (no dupli
    String delimiter = ",";
   
    
-   
+   nounsMap =  new  HashMap<String, Integer>();
    id2synset = new  HashMap<Integer, String>();
-   noun2ids =  new HashMap<String, Bag<Integer>>();
-   
-   //String[] s = in.readAllStrings();
-   //System.out.println("Count "+s.length);
+   noun2ids =  new HashMap<Integer, Bag<Integer>>();
+   hypernyms =  new HashMap<Integer, Bag<Integer>>();
+ 
+   int count =0;
+   //get synsets
    while (in.hasNextLine()){
        //parse 
        String synsetLine = in.readLine();
@@ -26,39 +29,62 @@ public WordNet(String synsets, String hypernyms)   // the set of nouns (no dupli
        //get id 
        int id = Integer.parseInt(fields[0]);
        String synset = fields[1];
-       String def = fields[2];
        id2synset.put(id,synset); 
-       
-       //Digraph G
+       //parsing nouns
+       String[] nouns = synset.split(" ");
+   
+       for(String noun : nouns){
+           if(noun2ids.containsKey(noun){
+               Bag b = noun2ids[noun];
+               b.add(Integer(id));
+               noun2ids.put(id,bag);
+           }
+           else{
+               Bag b = new Bag();
+               b.add(Integer(id));
+               noun2ids.put(id,bag);
+           }
+       }       
    }
-   Digraph G = new Digraph(id2synset.size());
    
-   
-//    while (!StdIn.isEmpty()) {             
-//         int v = StdIn.readInt();              
-//         int w = StdIn.readInt();              
-//        }
-//    in = new In(hypernyms);
-//
-//    while (!StdIn.isEmpty()) {             
-//         int v = StdIn.readInt();              
-//         int w = StdIn.readInt();              
-//        }
+   //get hypernynms
+    while (in.hasNextLine()){
+       //parse 
+       String line = in.readLine();
+       String[] fields = line.split(delimiter);
+       //get id 
+       int id = Integer.parseInt(fields[0]);
+       Bag bag = new Bag();
+       
+       for( int i=1;i<fields.lenght;i++){
+           bag.add(new Integer(fields[i])); 
+           // I think we should add edges here...
+           digraph.addEdge(id, fields[i]);
+       }
+       hypernyms.put(id,bag);       
+    }
         
 }
 public Iterable<String> nouns()   {
     
     
-    return null;
+    return nounsMap.values();
 } 
 // is the word a WordNet noun?    
 public boolean isNoun(String word)  {
 
-    return false;
+    
+    return noun2ids.containsKey(noun);
 }          
 // distance between nounA and nounB (defined below)
 public int distance(String nounA, String nounB)    
 {
+    if(!isNoun(nounA)||!isNoun(nounB)){
+        return new java.lang.IllegalArgumentException();
+    }
+    
+    //get distance from A to B
+    
     return -1;
 }    
 // a synset (second field of synsets.txt) that is the common ancestor of nounA and nounB      
