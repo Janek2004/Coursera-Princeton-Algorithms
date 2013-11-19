@@ -5,50 +5,58 @@ private boolean[] marked;
 // constructor takes a digraph (not necessarily a DAG)     
 public SAP(Digraph G)     
 {
-    digraph = G;//.copy();
+    digraph =new Digraph(G);//.copy();
     marked = new  boolean[G.V()];
 }
 // length of shortest ancestral path between v and w; -1 if no such path     
 
+
+
 public int length(int v, int w)      
 {
+    if(v>digraph.V()-1||w>digraph.V()-1||v<0||w<0){
+        throw new java.lang.IndexOutOfBoundsException();
+    }
      BreadthFirstDirectedPaths bfdp = new BreadthFirstDirectedPaths(digraph, w); 
      BreadthFirstDirectedPaths bfdp1 = new BreadthFirstDirectedPaths(digraph, v);
    
-     int dist=-1;
-     for(int i =0; i<digraph.V(); i++){
-         if(bfdp.hasPathTo(i)&&bfdp1.hasPathTo(i))
-         {
-
-             int l = bfdp.distTo(i) + bfdp1.distTo(i);
-             if(dist==-1){
-                 dist = l;
-             }
-             if(l<dist) dist =l;
-         }
-     } 
-    return dist;
-    
+     int dist=0;
+     int ancestor = ancestor(v,w);
+     if(ancestor ==-1){
+         dist =-1;
+     }
+    else{
+        dist = bfdp.distTo(ancestor)+bfdp1.distTo(ancestor);
+    }
+     
+    return dist;  
 }
 
 
 // a common ancestor of v and w that participates in a shortest ancestral path; -1 if no such path     
 public int ancestor(int v, int w)          
 {
+        if(v>digraph.V()-1||w>digraph.V()-1||v<0||w<0){
+        throw new java.lang.IndexOutOfBoundsException();
+    }
+           
      BreadthFirstDirectedPaths bfdp = new BreadthFirstDirectedPaths(digraph, w); 
      BreadthFirstDirectedPaths bfdp1 = new BreadthFirstDirectedPaths(digraph, v);
    
-     int dist=-1;
+     int dist=0;
      int ancestor = -1;
+     if(v==w) return w;
+     
      for(int i =0; i<digraph.V(); i++){
-          System.out.println("v "+v + " " + w + " "+ i);
+        
          if(bfdp.hasPathTo(i)&&bfdp1.hasPathTo(i))
          {
              int l = bfdp.distTo(i) + bfdp1.distTo(i);
-             if(dist==-1) {dist =l;} 
-             if(l<dist) {
+             if(dist==0){dist =l;} 
+             if(l<=dist) {
                  dist =l;
                  ancestor = i;
+                 
              }
          }
      } 
@@ -58,20 +66,17 @@ public int ancestor(int v, int w)
 // length of shortest ancestral path between any vertex in v and any vertex in w; -1 if no such path 
 public int length(Iterable<Integer> v, Iterable<Integer> w)
 {
+     
      BreadthFirstDirectedPaths bfdp = new BreadthFirstDirectedPaths(digraph, w); 
      BreadthFirstDirectedPaths bfdp1 = new BreadthFirstDirectedPaths(digraph, v);
    
-     int dist=-1;
-     for(int i =0; i<digraph.V(); i++){
-         if(bfdp.hasPathTo(i)&&bfdp1.hasPathTo(i))
-         {
-
-             int l = bfdp.distTo(i) + bfdp1.distTo(i);
-             if(dist==-1){
-                 dist = l;
-             }
-             if(l<dist) dist =l;
-         }
+     int ancestor = ancestor(v,w);
+     int dist =-1;
+     if(ancestor!=-1){
+       return -1;  
+     }
+     else{
+         dist = bfdp.distTo(ancestor)+bfdp1.distTo(ancestor);
      } 
     return dist;
 }
@@ -83,6 +88,7 @@ public int length(Iterable<Integer> v, Iterable<Integer> w)
    
      int dist=-1;
      int ancestor = -1;
+  
      for(int i =0; i<digraph.V(); i++){
          if(bfdp.hasPathTo(i)&&bfdp1.hasPathTo(i))
          {

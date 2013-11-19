@@ -10,17 +10,18 @@ public String outcast(String[] nouns)      // for unit testing of this class (su
 {
     //di = dist(Ai, A1) + dist(Ai, A2) + ... + dist(Ai, An)
     int max =0;
-    String outcast ="";
+    String outcast =null;
     for(String wordA : nouns){
         int newMax =0; 
         for(String wordB: nouns){
         //get distance of this one to... which one?
-            newMax += wordnet.distance(wordA,wordB);
+            if(wordA!=wordB){
+                newMax += wordnet.distance(wordA,wordB);
+            }
             if(newMax>max);
             {
                 max = newMax;
                 outcast = wordA;
-                System.out.println(" max " + max + " noun  "+ wordA + " wordB "+ wordB);
             }
         }   
     }

@@ -4,9 +4,8 @@ import java.util.HashMap;
 public class WordNet {
         //private final SAP paths;
         private final HashMap<Integer, String> id2synset;
-       // private final HashMap<Integer, Bag<Integer>> hypernyms;
         private final HashMap<String, Bag<Integer>> noun2ids;
-//        private final HashMap<String, Integer> nounsMap;
+
         private final Digraph G;
 // constructor takes the name of the two input files     
 public WordNet(String synsets, String _hypernyms)   // the set of nouns (no duplicates), returned as an Iterable  
@@ -43,7 +42,9 @@ public WordNet(String synsets, String _hypernyms)   // the set of nouns (no dupl
                noun2ids.put(noun,b);
            }
         
-       }       
+       }
+       
+       
    }
    
    Digraph digraph = new Digraph(id2synset.size());
@@ -68,6 +69,23 @@ public WordNet(String synsets, String _hypernyms)   // the set of nouns (no dupl
        
        //hypernyms.put(id,bag);
     }
+    
+    // Check for cycles
+                DirectedCycle cycle = new DirectedCycle(this.G);
+                if (cycle.hasCycle()) {
+                        throw new IllegalArgumentException("Not a valid DAG");
+                }
+
+                // Check if not rooted
+                int rooted = 0;
+                for (int i = 0; i < G.V(); i++) {
+                        if (!this.G.adj(i).iterator().hasNext())
+                                rooted++;
+                }
+
+                if (rooted != 1) {
+                        throw new IllegalArgumentException("Not a rooted DAG");
+                }
 }
 
 
@@ -88,7 +106,9 @@ public boolean isNoun(String word)  {
 // distance between nounA and nounB (defined below)
 public int distance(String nounA, String nounB)    
 {
-    
+    if(!isNoun(nounA) || !isNoun(nounB)){
+    throw new java.lang.IllegalArgumentException();
+    }
     SAP sap = new SAP(G);
     //get id of vertice
     
@@ -102,22 +122,25 @@ public int distance(String nounA, String nounB)
 // in a shortest ancestral path (defined below)      
 public String sap(String nounA, String nounB)      
 {
-    //Here we probably need to create a SAP
+    if(!isNoun(nounA) || !isNoun(nounB)){
+        throw new java.lang.IllegalArgumentException();
+    }    
+//Here we probably need to create a SAP
     //get ancestor
     Bag<Integer> bag =  noun2ids.get(nounA);
     Bag<Integer> bag1 =  noun2ids.get(nounB);
     SAP sap = new SAP(G);
-    int k  = sap.ancestor(bag,bag1);
   
-    return id2synset.get(k);    
+    return id2synset.get(sap.ancestor(bag,bag1));    
 }
 
 
 // for unit testing of this class      
-public static void main(String[] args)
-{
-    WordNet wn = new WordNet("synsets.txt","synonyms.txt");
-}
+public static void main(String[] args) {
+                WordNet w = new WordNet("synsets.txt", "hypernyms.txt");
+                System.out.println(w.sap("Rameses_the_Great", "Henry_Valentine_Miller")); 
+                System.out.println(w.distance("Rameses_the_Great", "Henry_Valentine_Miller")); 
+        }
 
 
 
